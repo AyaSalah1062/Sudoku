@@ -1,0 +1,102 @@
+import tkinter as tk
+from tkinter import messagebox
+from PIL import Image, ImageTk
+
+class ModeSelectionWindow:
+    def __init__(self, root):
+        self.root = root
+        self.root.title("Sudoku Solver - Mode Selection")
+
+        # Get screen width and height
+        screen_width = root.winfo_screenwidth()
+        screen_height = root.winfo_screenheight()
+
+        # Load and display background image
+        try:
+            image_path = "gui2.jpeg"  # Path to your background image
+            self.load_background_image(image_path, screen_width, screen_height)
+        except Exception as e:
+            print(f"Error loading background image: {e}")
+
+        # Create mode selection and level widgets
+        self.create_mode_selection()
+        self.create_level_selection()
+        self.create_start_button()
+
+    def load_background_image(self, image_path, screen_width, screen_height):
+        # Load and resize the image to fit the screen
+        try:
+            image = Image.open(image_path)
+            image = image.resize((screen_width, screen_height), Image.LANCZOS)  # Resize with Lanczos resampling
+            photo = ImageTk.PhotoImage(image)
+            bg_label = tk.Label(self.root, image=photo)
+            bg_label.image = photo  # Keep reference to the image to prevent garbage collection
+            bg_label.place(x=0, y=0, relwidth=1, relheight=1)  # Fill the entire window
+        except Exception as e:
+            print(f"Error resizing image: {e}")
+
+    def create_mode_selection(self):
+        # Create frame for mode selection (AI or User)
+        mode_frame = tk.Frame(self.root, padx=20, pady=20)
+        mode_frame.place(relx=0.2, rely=0.5, anchor="center")
+
+        # Mode selection label
+        mode_label = tk.Label(mode_frame, text="Select Mode:", font=("Arial", 18, "bold"))
+        mode_label.pack(side="top", pady=10)
+
+        # Radio buttons for mode selection
+        self.mode_var = tk.StringVar(value="AI")  # Default selection is AI mode
+        ai_radio = tk.Radiobutton(mode_frame, text="AI", font=("Arial", 16), variable=self.mode_var, value="AI" )
+        ai_radio.pack(anchor="w", pady=5)
+
+        user_radio = tk.Radiobutton(mode_frame, text="User", font=("Arial", 16), variable=self.mode_var, value="User")
+        user_radio.pack(anchor="w", pady=5)
+
+    def create_level_selection(self):
+        # Create frame for difficulty level selection (Easy, Intermediate, Hard)
+        level_frame = tk.Frame(self.root, padx=20, pady=20)
+        level_frame.place(relx=0.8, rely=0.5, anchor="center")
+
+        # Level selection label
+        level_label = tk.Label(level_frame, text="Select Level:", font=("Arial", 18, "bold"))
+        level_label.pack(side="top", pady=10)
+
+        # Checkbuttons for level selection
+        self.level_var = tk.StringVar(value="Easy")  # Default selection is Easy level
+        easy_check = tk.Checkbutton(level_frame, text="Easy", font=("Arial", 16), variable=self.level_var, onvalue="Easy", offvalue="")
+        easy_check.pack(anchor="w", pady=5)
+
+        intermediate_check = tk.Checkbutton(level_frame, text="Intermediate", font=("Arial", 16), variable=self.level_var, onvalue="Intermediate", offvalue="")
+        intermediate_check.pack(anchor="w", pady=5)
+
+        hard_check = tk.Checkbutton(level_frame, text="Hard", font=("Arial", 16), variable=self.level_var, onvalue="Hard", offvalue="")
+        hard_check.pack(anchor="w", pady=5)
+
+    def create_start_button(self):
+        # Create Start Game button
+        start_button = tk.Button(self.root, text="Start Game", font=("Arial", 16, "bold"), bg="green", fg="white", command=self.validate_and_start)
+        start_button.place(relx=0.5, rely=0.8, anchor="center")
+
+    def validate_and_start(self):
+        # Validate user input and start the game
+        mode = self.mode_var.get()
+        level = self.level_var.get()
+
+        if not level:
+            messagebox.showerror("Error", "Please select a difficulty level.")
+            return
+        
+        messagebox.showinfo("Game Start", f"Starting {mode} mode game with {level} level.")
+
+        # Placeholder for starting the game based on mode and level
+        # Implement your game logic here
+
+def main():
+    root = tk.Tk()
+    root.title("Sudoku Solver")
+    root.geometry("800x600")  # Set window size
+    app = ModeSelectionWindow(root)
+    root.mainloop()
+
+if __name__ == "__main__":
+    main()
